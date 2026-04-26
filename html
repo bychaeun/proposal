@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오신구씨에게</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  :root {
+    --bg: #0d0d0f;
+    --surface: #141416;
+    --border: rgba(255,255,255,0.07);
+    --accent: #ff6b9d;
+    --accent2: #ffa8c5;
+    --text: #f0f0f0;
+    --muted: rgba(240,240,240,0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── 커서 ── */
+  #cur {
+    position: fixed;
+    pointer-events: none;
+    z-index: 99999;
+    width: 36px;
+    height: 36px;
+    transform: translate(-8px, -32px);
+    font-size: 28px;
+    line-height: 1;
+    text-align: center;
+    user-select: none;
+  }
+
+  /* ── 배경 노이즈 ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── 배경 orb ── */
+  .orb { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
+  .orb1 { width: 520px; height: 520px; background: radial-gradient(circle, rgba(255,107,157,0.13) 0%, transparent 70%); top: -120px; right: -100px; animation: drift1 11s ease-in-out infinite alternate; }
+  .orb2 { width: 420px; height: 420px; background: radial-gradient(circle, rgba(130,80,255,0.08) 0%, transparent 70%); bottom: -90px; left: -80px; animation: drift2 14s ease-in-out infinite alternate; }
+  @keyframes drift1 { to { transform: translate(-40px, 28px); } }
+  @keyframes drift2 { to { transform: translate(28px, -40px); } }
+
+  /* ── 카드 ── */
+  .card {
+    position: relative;
+    z-index: 10;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 60px 68px 56px;
+    text-align: center;
+    width: min(500px, 92vw);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 40px 80px rgba(0,0,0,0.65);
+    animation: cardIn 0.75s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    border-radius: 0 0 4px 4px;
+  }
+  @keyframes cardIn { from { opacity:0; transform:translateY(28px) scale(0.96); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,107,157,0.1);
+    border: 1px solid rgba(255,107,157,0.22);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    animation: cardIn 0.7s 0.1s both;
+  }
+
+  .name-line {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 5px;
+    margin-bottom: 16px;
+    animation: cardIn 0.7s 0.15s both;
+  }
+
+  .question {
+    font-size: clamp(24px, 5.5vw, 34px);
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.5;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+    animation: cardIn 0.7s 0.2s both;
+  }
+  .question em {
+    font-style: normal;
+    background: linear-gradient(135deg, #ff6b9d, #ffb3d1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .sub {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 44px;
+    animation: cardIn 0.7s 0.25s both;
+  }
+
+  /* ── 버튼 그룹 ── */
+  .btn-group {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    animation: cardIn 0.7s 0.35s both;
+  }
+
+  .btn {
+    width: 160px;
+    padding: 16px 0;
+    border-radius: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    border: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 당연하죠 — 글로우 없음 */
+  .btn-yes {
+    background: linear-gradient(135deg, #ff6b9d, #ff9ec3);
+    color: #fff;
+    box-shadow: none;
+    transition: transform 0.15s ease;
+  }
+  .btn-yes:hover { transform: translateY(-2px) scale(1.02); }
+  .btn-yes:active { transform: scale(0.97); }
+
+  /* 아니요 — fixed 도망자, 더 잘 보이게 */
+  .btn-no {
+    width: 160px;
+    background: rgba(255,255,255,0.05);
+    color: rgba(240,240,240,0.7);
+    border: 1px solid rgba(255,255,255,0.25);
+    font-weight: 500;
+    font-size: 15px;
+    position: fixed;
+    z-index: 30;
+    transition: none;
+    border-radius: 14px;
+    padding: 16px 0;
+    font-family: 'Noto Sans KR', sans-serif;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── 팝업 모달 ── */
+  #modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(12px);
+    z-index: 800;
+    align-items: center;
+    justify-content: center;
+  }
+  #modal-bg.show { display: flex; animation: fadeIn 0.35s ease both; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  .modal {
+    background: #18181b;
+    border: 1px solid rgba(255,107,157,0.2);
+    border-radius: 28px;
+    padding: 52px 56px;
+    text-align: center;
+    width: min(420px, 88vw);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 40px 80px rgba(0,0,0,0.7);
+    animation: modalPop 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+    position: relative;
+  }
+  .modal::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    border-radius: 0 0 4px 4px;
+  }
+  @keyframes modalPop { from{opacity:0;transform:scale(0.85) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+
+  .modal-icon {
+    font-size: 58px;
+    display: block;
+    margin-bottom: 20px;
+    animation: iconPop 0.5s 0.2s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes iconPop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+
+  .modal-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .modal-title em {
+    font-style: normal;
+    background: linear-gradient(135deg, #ff6b9d, #ffb3d1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .modal-sub {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    line-height: 2;
+  }
+  .modal-hint {
+    margin-top: 28px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.15);
+    letter-spacing: 1.5px;
+  }
+
+  /* ── 넌 내꺼야 최종 화면 ── */
+  #final-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    background: var(--bg);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    gap: 0;
+  }
+  #final-screen.show { display: flex; animation: fadeIn 0.5s ease both; }
+
+  .final-icon {
+    font-size: 70px;
+    margin-bottom: 24px;
+    animation: iconPop 0.5s 0.1s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  .final-title {
+    font-size: clamp(28px, 7vw, 42px);
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: -1px;
+    line-height: 1.3;
+    margin-bottom: 14px;
+  }
+  .final-title em {
+    font-style: normal;
+    background: linear-gradient(135deg, #ff6b9d, #ffb3d1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .final-sub {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 2.5px;
+    margin-bottom: 44px;
+  }
+
+  /* 처음으로 버튼 */
+  .btn-reset {
+    padding: 13px 32px;
+    border-radius: 100px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(240,240,240,0.45);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-reset:hover {
+    border-color: rgba(255,107,157,0.4);
+    color: var(--accent2);
+  }
+
+  /* ── 토스트 ── */
+  .toast {
+    position: fixed;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: rgba(18,18,20,0.92);
+    border: 1px solid rgba(255,255,255,0.07);
+    backdrop-filter: blur(14px);
+    color: var(--accent2);
+    padding: 11px 26px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 400;
+    z-index: 9999;
+    transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── 클릭 파티클 ── */
+  .spark {
+    position: fixed;
+    pointer-events: none;
+    z-index: 99998;
+    animation: sparkFly ease-out forwards;
+  }
+  @keyframes sparkFly {
+    0%   { opacity:1; transform: translate(0,0) scale(1); }
+    100% { opacity:0; transform: translate(var(--dx), var(--dy)) scale(0.2) rotate(var(--rot)); }
+  }
+
+  /* ── confetti ── */
+  .confetti {
+    position: fixed;
+    pointer-events: none;
+    z-index: 950;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall {
+    0%   { opacity:1; transform: translateY(0) rotate(0deg); }
+    100% { opacity:0; transform: translateY(85vh) rotate(540deg); }
+  }
+</style>
+</head>
+<body>
+
+<div id="cur">&#x1F490;</div>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<!-- 메인 카드 -->
+<div class="card" id="mainCard">
+  <div class="tag">&#x1F48D;&nbsp; Proposal</div>
+  <div class="name-line">오신구 씨에게</div>
+  <div class="question"><em>채은</em>이와<br>결혼하시겠습니까?</div>
+  <div class="sub">기회는 한 번입니다</div>
+
+  <div class="btn-group" id="btnGroup">
+    <button class="btn btn-yes" onclick="sayYes()">당연하죠 &#x1F48D;</button>
+    <div style="width:160px;height:52px;flex-shrink:0;display:flex;align-items:center;" id="noPlaceholder"></div>
+  </div>
+</div>
+
+<!-- 아니요 버튼 (fixed 도망자) -->
+<button class="btn btn-no" id="btnNo">아니요</button>
+
+<!-- 팝업 모달 -->
+<div id="modal-bg">
+  <div class="modal" id="modal">
+    <span class="modal-icon">&#x1F970;</span>
+    <div class="modal-title">싱구오빠<br><em>사랑해</em> &#x1F496;</div>
+    <div class="modal-sub" style="margin-top:14px">채은이 기뻐서 오열중..</div>
+    <div class="modal-sub">&#x1F62D;&#x1F62D;&#x1F62D;</div>
+    <div class="modal-hint">— 화면을 클릭하면 계속됩니다 —</div>
+  </div>
+</div>
+
+<!-- 넌 내꺼야 최종 화면 -->
+<div id="final-screen">
+  <div class="final-icon">&#x1F495;</div>
+  <div class="final-title">넌 내꺼야<em>.</em></div>
+  <div class="final-sub">영원히 &#x2728;</div>
+  <button class="btn-reset" onclick="resetAll()">&#x21BA;&nbsp; 처음으로</button>
+</div>
+
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── 커서
+  const cur = document.getElementById('cur');
+  document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX + 'px';
+    cur.style.top  = e.clientY + 'px';
+  });
+
+  // ── 클릭 파티클
+  const sparkList = ['\u2728','\u1F338','\u2B50','\uD83D\uDC8B','\uD83D\uDC96','\uD83D\uDCAB','\uD83C\uDF38'];
+  const sparkHtml = ['&#x2728;','&#x1F338;','&#x2B50;','&#x1F48B;','&#x1F496;','&#x1F4AB;','&#x1F338;'];
+
+  document.addEventListener('click', e => {
+    for (let i = 0; i < 10; i++) {
+      const s = document.createElement('div');
+      s.className = 'spark';
+      const angle = (Math.PI * 2 / 10) * i + (Math.random() - 0.5) * 0.6;
+      const dist  = 55 + Math.random() * 70;
+      s.innerHTML = sparkHtml[Math.floor(Math.random() * sparkHtml.length)];
+      s.style.cssText = `
+        left: ${e.clientX}px;
+        top: ${e.clientY}px;
+        --dx: ${Math.cos(angle) * dist}px;
+        --dy: ${Math.sin(angle) * dist}px;
+        --rot: ${Math.random() * 360}deg;
+        font-size: ${12 + Math.floor(Math.random() * 10)}px;
+        animation-duration: ${0.45 + Math.random() * 0.35}s;
+      `;
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 900);
+    }
+  });
+
+  // ── 아니요 위치 초기화
+  const btnNo = document.getElementById('btnNo');
+  let noX = 0, noY = 0, escapeCnt = 0;
+
+  function initNoPos() {
+    const ph  = document.getElementById('noPlaceholder');
+    const r   = ph.getBoundingClientRect();
+    const bh  = btnNo.offsetHeight;
+    // placeholder 세로 중앙 - 버튼 높이/2 → 정확히 같은 높이 정렬
+    noX = r.left;
+    noY = r.top + (r.height - bh) / 2;
+    btnNo.style.transition = 'none';
+    btnNo.style.left = noX + 'px';
+    btnNo.style.top  = noY + 'px';
+  }
+  window.addEventListener('load', () => setTimeout(initNoPos, 60));
+  window.addEventListener('resize', initNoPos);
+
+  // ── 도망
+  btnNo.addEventListener('mouseenter', () => {
+    escapeCnt++;
+    const m   = 60;
+    const maxX = window.innerWidth  - btnNo.offsetWidth  - m;
+    const maxY = window.innerHeight - btnNo.offsetHeight - m;
+    let nx, ny, tries = 0;
+    do {
+      nx = m + Math.random() * maxX;
+      ny = m + Math.random() * maxY;
+      tries++;
+    } while (Math.hypot(nx - noX, ny - noY) < 160 && tries < 20);
+    noX = nx; noY = ny;
+    btnNo.style.transition = 'left 0.12s cubic-bezier(0.16,1,0.3,1), top 0.12s cubic-bezier(0.16,1,0.3,1)';
+    btnNo.style.left = noX + 'px';
+    btnNo.style.top  = noY + 'px';
+    const msgs = { 2:'어디 가려고요? &#x1F649;', 5:'못 잡아요~ 도망갈 거야 &#x1F3C3;', 9:'그냥 당연하죠 누르면 어때요?', 13:'포기해요 ㅋㅋ 답 정해져 있어요' };
+    if (msgs[escapeCnt]) showToast(msgs[escapeCnt]);
+  });
+
+  // ── YES 클릭
+  function sayYes() {
+    document.getElementById('modal-bg').style.display = 'flex';
+    document.getElementById('modal-bg').style.animation = 'fadeIn 0.35s ease both';
+    launchConfetti();
+  }
+
+  // ── 팝업 클릭 → 아무데나 눌러도 최종 화면으로
+  let modalDismissed = false;
+  document.getElementById('modal-bg').addEventListener('click', function() {
+    if (modalDismissed) return;
+    modalDismissed = true;
+    this.style.display = 'none';
+    showFinal();
+  });
+
+  function showFinal() {
+    document.getElementById('final-screen').classList.add('show');
+    launchConfetti();
+  }
+
+  // ── 처음으로
+  function resetAll() {
+    document.getElementById('final-screen').classList.remove('show');
+    modalDismissed = false;
+    const card = document.getElementById('mainCard');
+    card.style.animation = 'none';
+    void card.offsetWidth;
+    card.style.animation = 'cardIn 0.7s cubic-bezier(0.16,1,0.3,1) both';
+    escapeCnt = 0;
+    setTimeout(initNoPos, 60);
+  }
+
+  function launchConfetti() {
+    const em = ['&#x1F496;','&#x1F338;','&#x2728;','&#x1F38A;','&#x1F48D;','&#x1F970;','&#x1F493;','&#x1F4AB;','&#x2B50;','&#x1FA77;'];
+    for (let i = 0; i < 55; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.innerHTML = em[Math.floor(Math.random() * em.length)];
+      c.style.cssText = `
+        left: ${Math.random() * 100}vw;
+        top: -30px;
+        font-size: ${12 + Math.random() * 18}px;
+        animation-duration: ${2.5 + Math.random() * 3}s;
+        animation-delay: ${Math.random() * 1.8}s;
+      `;
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 7000);
+    }
+  }
+
+  // ── 토스트
+  let tTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.innerHTML = msg;
+    t.classList.add('show');
+    clearTimeout(tTimer);
+    tTimer = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+</script>
+</body>
+</html>
