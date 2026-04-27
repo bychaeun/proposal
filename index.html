@@ -16,6 +16,7 @@ body{font-family:'Pretendard Variable','Pretendard',sans-serif;min-height:100vh;
 .star{position:absolute;border-radius:50%;background:rgba(255,200,230,0.7);animation:twinkle var(--dur) ease-in-out infinite var(--delay);}
 @keyframes twinkle{0%,100%{opacity:0.15;transform:scale(1);}50%{opacity:1;transform:scale(1.8);}}
 
+
 /* ── 커서 ── */
 #cursor{position:fixed;pointer-events:none;z-index:99999;width:26px;height:26px;transform:translate(-13px,-13px);will-change:transform;}
 #cursor.clicking{transform:translate(-13px,-13px) scale(0.72);}
@@ -184,6 +185,13 @@ body{font-family:'Pretendard Variable','Pretendard',sans-serif;min-height:100vh;
   .cal-day{height:auto;aspect-ratio:1;font-size:12px;}
   .cal-day.has-memo .day-num{width:28px;height:28px;font-size:11px;}
 }
+
+/* ── 스크롤바 ── */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:rgba(255,255,255,0.03);border-radius:999px;}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#ff6eb4,#a78bfa);border-radius:999px;}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#ff3d8b,#e879f9);}
+*{scrollbar-width:thin;scrollbar-color:#ff6eb4 rgba(255,255,255,0.03);}
 </style>
 </head>
 <body>
@@ -482,6 +490,7 @@ function deleteMemo(){
   setMemos(memos);renderCalendar();updateDday();showToast('삭제했어');closeModal();
 }
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
 
 /* ── 커서 ── */
 const cursorEl=document.getElementById('cursor'),starPath=document.getElementById('starPath');
