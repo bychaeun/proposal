@@ -327,11 +327,11 @@ body{font-family:'Pretendard Variable','Pretendard',sans-serif;min-height:100vh;
       <div class="section-label">통계</div>
       <div class="stats-row">
         <div class="stat-card glass clickable" onclick="openLog()">
-          <div class="s-num">6</div>
+          <div class="s-num" id="statMeet">—</div>
           <div class="s-lbl">만난 횟수</div>
         </div>
         <div class="stat-card glass clickable" onclick="openCities()">
-          <div class="s-num">2</div>
+          <div class="s-num" id="statCity">—</div>
           <div class="s-lbl">함께한 도시</div>
         </div>
         <div class="stat-card glass clickable" onclick="openRel()">
@@ -346,23 +346,38 @@ body{font-family:'Pretendard Variable','Pretendard',sans-serif;min-height:100vh;
 
 <script>
 const PRESET = {
-  '2026-04-04':{title:'🎪 첫 만남 — 왕인박사 축제',tags:['첫 만남','광주','7명 모임'],dot:'pink',body:'박정민 친구로 처음 모임 참여. 7명이서 영인 왕인박사 축제 갔다가 룸소방에서 술 마심. 신구랑 정운이 미리 와서 기다리는 동안 인형뽑기도 같이 했음! 내가 술에 취해서 신구 손을 냅다 잡아버림... 😅'},
-  '2026-04-11':{title:'🎬 살목지 + 삼겹살 소주',tags:['영화','4인 모임'],dot:'blue',body:'다영이, 지환오빠랑 넷이서 살목지 봤음. 끝나고 삼겹살에 소주 ㅎㅎ 신구 막걸리 2잔에 힘들어했던 거 너무 귀여웠음 ㅋㅋ 이때 많이 친해졌고 서로 좋아한다고 표현함 💕'},
-  '2026-04-12':{title:'🦋 한정식 + 광주 동물원',tags:['첫 단둘 데이트'],dot:'green',body:'신구랑 처음으로 둘이서 만난 날!! 한정식 먹고 카페도 갔는데 갑자기 동물원까지 ㅋㅋ 벚꽃이 너무 예뻤고 날씨도 완벽했음. 설레고 행복한 하루였음 🌸'},
-  '2026-04-16':{title:'📞 우리가 하나 된 날 💑',tags:['♡ 사귄 날','전화 고백'],dot:'pink',body:'내가 먼저 전화로 사귀자고 고백한 날! 어차피 서로 좋아하는 거 알고 손도 잡았는데 왜 안 사귀나 싶어서 내가 먼저 말해버림 ♡'},
-  '2026-04-18':{title:'🌙 새벽 2시 만남',tags:['새벽 만남','숙소','넷플릭스'],dot:'blue',body:'대화하다 보고싶다고 밤 12시에 갑자기 숙소 잡고 내려온다는 신구.. 새벽 2시에 만나서 소주에 과자 육포 먹으면서 블랙미러 보다가... 야한 짓 해버림 😳 손만 잡아봤는데 이날 모든 걸 다 해버림'},
-  '2026-04-19':{title:'💊 사후 피임약 복용',tags:['건강'],dot:'green',body:'응급실에서 사후 피임약 처방받음. 약사님이 결혼을 하라고 하셨다... ㅋㅋㅋㅋ 다음을 기대할게 😏'},
-  '2026-04-25':{title:'🌃 양동 맥주 축제 → 새벽 등장',tags:['새벽 드라이브','산책'],dot:'pink',body:'정운이, 이수민이랑 양동 맥주축제 즐기고 있었는데 내가 화난 줄 알고 신구가 새벽 1시에 와줬음..! 다들 헤어지고 둘이서 생활공원 산책하고, 차 안에서 야한 짓도 했당 😳 오전 5시에 피곤한데 청주로 올라간 신구 ㅠㅠ'}
+  '2026-04-04':{meet:true, city:'영인', isRel:false, title:'🎪 첫 만남 — 왕인박사 축제',tags:['첫 만남','영인','7명 모임'],dot:'pink',body:'박정민 친구로 처음 모임 참여. 7명이서 영인 왕인박사 축제 갔다가 룸소방에서 술 마심. 신구랑 정운이 미리 와서 기다리는 동안 인형뽑기도 같이 했음! 내가 술에 취해서 신구 손을 냅다 잡아버림... 😅'},
+  '2026-04-11':{meet:true, city:'광주', isRel:false, title:'🎬 살목지 + 삼겹살 소주',tags:['영화','4인 모임'],dot:'blue',body:'다영이, 지환오빠랑 넷이서 살목지 봤음. 끝나고 삼겹살에 소주 ㅎㅎ 신구 막걸리 2잔에 힘들어했던 거 너무 귀여웠음 ㅋㅋ 이때 많이 친해졌고 서로 좋아한다고 표현함 💕'},
+  '2026-04-12':{meet:true, city:'광주', isRel:false, title:'🦋 한정식 + 광주 동물원',tags:['첫 단둘 데이트'],dot:'green',body:'신구랑 처음으로 둘이서 만난 날!! 한정식 먹고 카페도 갔는데 갑자기 동물원까지 ㅋㅋ 벚꽃이 너무 예뻤고 날씨도 완벽했음. 설레고 행복한 하루였음 🌸'},
+  '2026-04-16':{meet:false, city:null,   isRel:false, title:'📞 우리가 하나 된 날 💑',tags:['♡ 사귄 날','전화 고백'],dot:'pink',body:'내가 먼저 전화로 사귀자고 고백한 날! 어차피 서로 좋아하는 거 알고 손도 잡았는데 왜 안 사귀나 싶어서 내가 먼저 말해버림 ♡'},
+  '2026-04-18':{meet:true, city:'광주', isRel:true,  title:'🌙 새벽 2시 만남',tags:['새벽 만남','숙소','넷플릭스'],dot:'blue',body:'대화하다 보고싶다고 밤 12시에 갑자기 숙소 잡고 내려온다는 신구.. 새벽 2시에 만나서 소주에 과자 육포 먹으면서 블랙미러 보다가... 야한 짓 해버림 😳 손만 잡아봤는데 이날 모든 걸 다 해버림'},
+  '2026-04-19':{meet:true,  city:'광주', isRel:false, title:'💊 사후 피임약 복용',tags:['건강'],dot:'green',body:'응급실에서 사후 피임약 처방받음. 약사님이 결혼을 하라고 하셨다... ㅋㅋㅋㅋ 다음을 기대할게 😏'},
+  '2026-04-25':{meet:true, city:'광주', isRel:false,  title:'🌃 양동 맥주 축제 → 새벽 등장',tags:['새벽 드라이브','산책'],dot:'pink',body:'정운이, 이수민이랑 양동 맥주축제 즐기고 있었는데 내가 화난 줄 알고 신구가 새벽 1시에 와줬음..! 다들 헤어지고 둘이서 생활공원 산책하고, 차 안에서 야한 짓도 했당 😳 오전 5시에 피곤한데 청주로 올라간 신구 ㅠㅠ'}
 };
 
-const REL_LOG = [
-  {date:'2026.04.18',icon:'🌙',title:'첫 번째',desc:'새벽 숙소에서. 손만 잡아봤는데 이날 모든 걸 다 해버림 😳'}
-];
+/* PRESET에서 자동 계산 */
+function getMeetCount(){return Object.values(PRESET).filter(p=>p.meet).length;}
+function getCities(){
+  const map={};
+  Object.entries(PRESET).forEach(([key,p])=>{
+    if(p.city){
+      if(!map[p.city])map[p.city]={name:p.city,dates:[]};
+      map[p.city].dates.push(key);
+    }
+  });
+  return Object.values(map);
+}
+function getRelLog(){
+  return Object.entries(PRESET)
+    .filter(([,p])=>p.isRel)
+    .sort((a,b)=>a[0].localeCompare(b[0]))
+    .map(([key,p],i)=>{
+      const [,mm,dd]=key.split('-');
+      return {date:`2026.${mm}.${dd}`, icon:'🌙', title:`${i+1}번째`, desc:p.body};
+    });
+}
 
-const CITIES = [
-  {emoji:'🏯',name:'영인',desc:'왕인박사 축제 (2026.04.04)'},
-  {emoji:'🌸',name:'광주',desc:'동물원·한정식·맥주축제·생활공원 (2026.04.11~25)'}
-];
+const CITY_EMOJI={'영인':'🏯','광주':'🌸','청주':'🌿','서울':'🏙️','부산':'🌊','제주':'🍊'};
 
 let curY=2026,curM=4,activeDate=null;
 function getMemos(){try{return JSON.parse(localStorage.getItem('diary_v3')||'{}')}catch{return{}}}
@@ -375,6 +390,10 @@ function updateDday(){
   document.getElementById('ddayNum').textContent=d1>=0?`D+${d1}`:`D${d1}`;
   document.getElementById('firstMeetNum').textContent=d2>=0?`${d2}일`:'-';
   document.getElementById('memoCount').textContent=Object.keys(PRESET).length+Object.keys(getMemos()).length;
+  /* 통계 자동 업데이트 */
+  document.getElementById('statMeet').textContent=getMeetCount();
+  document.getElementById('statCity').textContent=getCities().length;
+  document.getElementById('sexCount').textContent=getRelLog().length;
 }
 
 function renderCalendar(){
@@ -431,9 +450,11 @@ document.getElementById('logBackdrop').addEventListener('click',function(e){if(e
 /* ── 도시 ── */
 function openCities(){
   const body=document.getElementById('cityBody');body.innerHTML='';
-  CITIES.forEach(c=>{
+  getCities().forEach(c=>{
+    const emoji=CITY_EMOJI[c.name]||'📍';
+    const dates=c.dates.map(d=>{const[,mm,dd]=d.split('-');return`${mm}/${dd}`;}).join(', ');
     const el=document.createElement('div');el.className='rel-item';
-    el.innerHTML=`<div class="rel-icon">${c.emoji}</div><div><div class="rel-name">${c.name}</div><div class="rel-desc">${c.desc}</div></div>`;
+    el.innerHTML=`<div class="rel-icon">${emoji}</div><div><div class="rel-name">${c.name}</div><div class="rel-desc">${dates}</div></div>`;
     body.appendChild(el);
   });
   openSheet('cityBackdrop');
@@ -444,11 +465,12 @@ document.getElementById('cityBackdrop').addEventListener('click',function(e){if(
 /* ── 관계 ── */
 function openRel(){
   const body=document.getElementById('relBody');body.innerHTML='';
+  const log=getRelLog();
   const total=document.createElement('div');
   total.style.cssText='text-align:center;padding:16px 0 20px;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:8px;';
-  total.innerHTML=`<div style="font-size:36px;font-weight:800;background:linear-gradient(135deg,#ff6eb4,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${REL_LOG.length}회</div><div style="font-size:11px;color:rgba(255,200,230,0.45);margin-top:4px;font-weight:600;letter-spacing:1px;">TOTAL</div>`;
+  total.innerHTML=`<div style="font-size:36px;font-weight:800;background:linear-gradient(135deg,#ff6eb4,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${log.length}회</div><div style="font-size:11px;color:rgba(255,200,230,0.45);margin-top:4px;font-weight:600;letter-spacing:1px;">TOTAL</div>`;
   body.appendChild(total);
-  REL_LOG.forEach(r=>{
+  log.forEach(r=>{
     const el=document.createElement('div');el.className='rel-item';
     el.innerHTML=`<div class="rel-icon">${r.icon}</div><div><div class="rel-name">${r.title}</div><div style="font-size:10px;color:rgba(255,180,220,0.55);margin-bottom:3px;">${r.date}</div><div class="rel-desc">${r.desc}</div></div>`;
     body.appendChild(el);
